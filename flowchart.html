@@ -11,25 +11,28 @@
             theme: 'dark',
             themeVariables: {
                 primaryColor: '#0a2540',
-                primaryTextColor: '#00ffff',
+                primaryTextColor: '#ffffff',
                 primaryBorderColor: '#00ffff',
                 lineColor: '#00ff88',
                 secondaryColor: '#1a1a2e',
                 tertiaryColor: '#16213e',
-                fontSize: '13px',
-                fontFamily: 'Orbitron, monospace',
+                fontSize: '16px',
+                fontFamily: 'Rajdhani, sans-serif',
                 edgeLabelBackground: '#0a0a0a',
-                clusterBkg: 'rgba(0, 255, 255, 0.05)',
-                clusterBorder: '#00ffff'
+                clusterBkg: 'rgba(0, 255, 255, 0.08)',
+                clusterBorder: '#00ffff',
+                nodeBorder: '#00ffff',
+                mainBkg: '#0a2540',
+                textColor: '#ffffff'
             },
             flowchart: {
                 useMaxWidth: true,
                 htmlLabels: true,
                 curve: 'basis',
-                padding: 25,
-                nodeSpacing: 90,
-                rankSpacing: 120,
-                diagramPadding: 30
+                padding: 30,
+                nodeSpacing: 100,
+                rankSpacing: 150,
+                diagramPadding: 40
             }
         });
     </script>
@@ -467,8 +470,17 @@
 
         /* Mermaid styling overrides */
         .mermaid svg {
-            font-family: 'Rajdhani', monospace !important;
+            font-family: 'Rajdhani', sans-serif !important;
             filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.3));
+        }
+
+        .mermaid .nodeLabel {
+            color: #ffffff !important;
+            font-size: 20px !important;
+            font-weight: 800 !important;
+            font-family: 'Rajdhani', sans-serif !important;
+            line-height: 1.5 !important;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8) !important;
         }
 
         .mermaid .node rect,
@@ -476,18 +488,35 @@
         .mermaid .node polygon,
         .mermaid .node path {
             filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.4));
-            stroke-width: 2px !important;
+            stroke-width: 2.5px !important;
         }
 
         .mermaid .edgePath .path {
-            stroke-width: 2px !important;
+            stroke-width: 2.5px !important;
             filter: drop-shadow(0 0 5px rgba(0, 255, 136, 0.6));
         }
 
+        .mermaid .edgeLabel {
+            background-color: rgba(10, 10, 10, 0.9) !important;
+            color: #00ffff !important;
+            font-size: 15px !important;
+            font-weight: 600 !important;
+            padding: 5px 10px !important;
+            border-radius: 4px !important;
+        }
+
         .mermaid .cluster rect {
-            stroke-width: 2px !important;
+            stroke-width: 2.5px !important;
             rx: 8 !important;
             ry: 8 !important;
+        }
+
+        .mermaid .cluster-label {
+            color: #00ffff !important;
+            font-size: 18px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
         }
 
         @media (max-width: 768px) {
@@ -632,10 +661,10 @@ graph TD
     RISK_CALC --> FINAL_RISK
 
     %% Styling
-    classDef data fill:#e1f5fe,stroke:#01579b,stroke-width:2px,rx:5,ry:5;
-    classDef process fill:#fff3e0,stroke:#e65100,stroke-width:2px;
-    classDef output fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,rx:5,ry:5;
-    classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,shape:diamond;
+    classDef data fill:#0d4d6e,stroke:#00ffff,stroke-width:3px,rx:5,ry:5,color:#ffffff;
+    classDef process fill:#4a2c00,stroke:#ff8800,stroke-width:3px,color:#ffffff;
+    classDef output fill:#0d4d2c,stroke:#00ff88,stroke-width:3px,rx:5,ry:5,color:#ffffff;
+    classDef decision fill:#4d4d00,stroke:#ffff00,stroke-width:3px,shape:diamond,color:#ffffff;
 
     class D1,D2,D3,D4,D5,StyleP1 data;
     class P1,P2a,P2b,P2c,P2d,INT1,STAT1,DROP,RANK,SPLIT,ANFIS_SETUP,GWO,VALIDATE,MAP_SUS,DEF_DMU,DEA_RUN,RISK_CALC process;
