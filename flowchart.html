@@ -3,33 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Land Subsidence Research Workflow</title>
+    <title>Land Subsidence Research Workflow - Geospatial Analysis System</title>
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ 
             startOnLoad: true,
-            theme: 'base',
+            theme: 'dark',
             themeVariables: {
-                primaryColor: '#e1f5fe',
-                primaryTextColor: '#01579b',
-                primaryBorderColor: '#01579b',
-                lineColor: '#455a64',
-                secondaryColor: '#fff3e0',
-                tertiaryColor: '#e8f5e9',
-                fontSize: '14px',
-                fontFamily: 'Inter, sans-serif'
+                primaryColor: '#0a2540',
+                primaryTextColor: '#00ffff',
+                primaryBorderColor: '#00ffff',
+                lineColor: '#00ff88',
+                secondaryColor: '#1a1a2e',
+                tertiaryColor: '#16213e',
+                fontSize: '13px',
+                fontFamily: 'Orbitron, monospace',
+                edgeLabelBackground: '#0a0a0a',
+                clusterBkg: 'rgba(0, 255, 255, 0.05)',
+                clusterBorder: '#00ffff'
             },
             flowchart: {
                 useMaxWidth: true,
                 htmlLabels: true,
                 curve: 'basis',
-                padding: 20,
-                nodeSpacing: 80,
-                rankSpacing: 100
+                padding: 25,
+                nodeSpacing: 90,
+                rankSpacing: 120,
+                diagramPadding: 30
             }
         });
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -38,83 +42,244 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Rajdhani', 'Orbitron', monospace, sans-serif;
+            background: #0a0a0a;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(ellipse at center, #0d1b2a 0%, #000000 100%);
+            background-size: 40px 40px, 40px 40px, 100% 100%;
+            background-position: 0 0, 0 0, center center;
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(0, 255, 136, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         .header {
             text-align: center;
-            color: white;
+            color: #00ffff;
             margin-bottom: 30px;
-            padding: 20px;
-            animation: fadeIn 0.8s ease-in;
+            padding: 30px;
+            animation: fadeInGlow 1s ease-in;
+            position: relative;
+            z-index: 1;
+            background: rgba(10, 27, 40, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2),
+                        inset 0 0 20px rgba(0, 255, 255, 0.05);
+        }
+
+        .header::before {
+            content: '◢ GEOSPATIAL ANALYSIS SYSTEM ◣';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0a0a0a;
+            padding: 0 20px;
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: #00ff88;
+            font-family: 'Orbitron', monospace;
         }
 
         .header h1 {
-            font-size: 2.5em;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-size: 2.8em;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8),
+                         0 0 40px rgba(0, 255, 255, 0.4);
+            letter-spacing: 2px;
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(90deg, #00ffff, #00ff88, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 3s ease-in-out infinite;
         }
 
         .header p {
             font-size: 1.1em;
-            opacity: 0.95;
+            color: #88ffff;
             font-weight: 400;
+            letter-spacing: 1px;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-around;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .status-item {
+            flex: 1;
+            min-width: 200px;
+            background: rgba(10, 27, 40, 0.7);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px 20px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffff, transparent);
+            animation: scan 2s linear infinite;
+        }
+
+        .status-label {
+            font-size: 11px;
+            color: #00ff88;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .status-value {
+            font-size: 18px;
+            color: #00ffff;
+            font-weight: 700;
+            font-family: 'Rajdhani', sans-serif;
         }
 
         .controls {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 20px;
-            animation: slideDown 0.8s ease-out;
+            margin-bottom: 25px;
+            animation: slideDown 1s ease-out;
+            position: relative;
+            z-index: 1;
         }
 
         .btn {
-            background: white;
-            color: #667eea;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff;
+            border: 2px solid #00ffff;
+            padding: 12px 28px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 13px;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3),
+                        inset 0 0 10px rgba(0, 255, 255, 0.1);
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6),
+                        inset 0 0 15px rgba(0, 255, 255, 0.2);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-            background: #f8f9fa;
         }
 
         .btn:active {
             transform: translateY(0);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
         }
 
         #mermaid-container {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            background: rgba(10, 27, 40, 0.5);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.2),
+                        inset 0 0 30px rgba(0, 255, 255, 0.03);
             overflow: hidden;
             position: relative;
-            min-height: 600px;
-            animation: scaleIn 0.8s ease-out;
+            min-height: 700px;
+            animation: containerGlow 1s ease-out;
+            backdrop-filter: blur(15px);
+            z-index: 1;
+        }
+
+        #mermaid-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00ffff, transparent);
+            animation: borderScan 3s linear infinite;
         }
 
         #diagram-wrapper {
             width: 100%;
             height: auto;
-            min-height: 600px;
+            min-height: 700px;
             overflow: auto;
-            padding: 40px;
+            padding: 50px;
+            position: relative;
+        }
+
+        #diagram-wrapper::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        #diagram-wrapper::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+        }
+
+        #diagram-wrapper::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #00ffff, #00ff88);
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        #diagram-wrapper::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #00ff88, #00ffff);
         }
 
         .mermaid {
@@ -125,61 +290,145 @@
         }
 
         .legend {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            animation: fadeIn 1s ease-in;
+            background: rgba(10, 27, 40, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 25px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2),
+                        inset 0 0 20px rgba(0, 255, 255, 0.05);
+            animation: fadeInGlow 1.2s ease-in;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .legend::after {
+            content: '◢◤';
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            color: rgba(0, 255, 255, 0.2);
+            font-size: 24px;
         }
 
         .legend h3 {
-            color: #667eea;
-            margin-bottom: 15px;
-            font-size: 1.3em;
+            color: #00ffff;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+            padding-bottom: 10px;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
-            gap: 12px;
+            margin-bottom: 15px;
+            gap: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .legend-item:hover {
+            background: rgba(0, 255, 255, 0.05);
+            transform: translateX(5px);
+        }
+
+        .legend-item::before {
+            content: '▸';
+            color: #00ff88;
+            font-size: 18px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .legend-item:hover::before {
+            opacity: 1;
         }
 
         .legend-color {
-            width: 40px;
-            height: 25px;
-            border-radius: 5px;
-            border: 2px solid #333;
+            width: 50px;
+            height: 30px;
+            border-radius: 6px;
+            border: 2px solid;
+            box-shadow: 0 0 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .legend-color::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 3s infinite;
         }
 
         .legend-text {
-            font-size: 14px;
-            color: #333;
+            font-size: 15px;
+            color: #88ffff;
             font-weight: 500;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .legend-text strong {
+            color: #00ffff;
+            font-weight: 700;
         }
 
         .zoom-indicator {
             position: absolute;
             bottom: 20px;
             right: 20px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 10px 20px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Orbitron', monospace;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        /* Animations */
+        @keyframes fadeInGlow {
+            from { 
+                opacity: 0;
+                box-shadow: 0 0 0 rgba(0, 255, 255, 0);
+            }
+            to { 
+                opacity: 1;
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.2),
+                            inset 0 0 20px rgba(0, 255, 255, 0.05);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% { 
+                text-shadow: 0 0 20px rgba(0, 255, 255, 0.8),
+                             0 0 40px rgba(0, 255, 255, 0.4);
+            }
+            50% { 
+                text-shadow: 0 0 30px rgba(0, 255, 255, 1),
+                             0 0 60px rgba(0, 255, 255, 0.6);
+            }
         }
 
         @keyframes slideDown {
             from { 
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translateY(-30px);
             }
             to { 
                 opacity: 1;
@@ -187,26 +436,58 @@
             }
         }
 
-        @keyframes scaleIn {
+        @keyframes containerGlow {
             from { 
                 opacity: 0;
-                transform: scale(0.95);
+                transform: scale(0.98);
+                box-shadow: 0 0 0 rgba(0, 255, 255, 0);
             }
             to { 
                 opacity: 1;
                 transform: scale(1);
+                box-shadow: 0 0 40px rgba(0, 255, 255, 0.2),
+                            inset 0 0 30px rgba(0, 255, 255, 0.03);
             }
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+
+        @keyframes borderScan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 200%; }
         }
 
         /* Mermaid styling overrides */
         .mermaid svg {
-            font-family: 'Inter', sans-serif !important;
+            font-family: 'Rajdhani', monospace !important;
+            filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.3));
         }
 
         .mermaid .node rect,
         .mermaid .node circle,
-        .mermaid .node polygon {
-            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+        .mermaid .node polygon,
+        .mermaid .node path {
+            filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.4));
+            stroke-width: 2px !important;
+        }
+
+        .mermaid .edgePath .path {
+            stroke-width: 2px !important;
+            filter: drop-shadow(0 0 5px rgba(0, 255, 136, 0.6));
+        }
+
+        .mermaid .cluster rect {
+            stroke-width: 2px !important;
+            rx: 8 !important;
+            ry: 8 !important;
         }
 
         @media (max-width: 768px) {
@@ -216,18 +497,43 @@
             .controls {
                 flex-wrap: wrap;
             }
+            .status-bar {
+                flex-direction: column;
+            }
+            #diagram-wrapper {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🌍 Land Subsidence Research Workflow</h1>
-        <p>Integrated Framework for Risk Assessment & Vulnerability Analysis</p>
+        <h1>⬡ LAND SUBSIDENCE ANALYSIS ⬡</h1>
+        <p>◈ Integrated Geospatial Risk Assessment Framework ◈</p>
+    </div>
+
+    <div class="status-bar">
+        <div class="status-item">
+            <div class="status-label">⬢ Mission Phase</div>
+            <div class="status-value">Multi-Phase Analysis</div>
+        </div>
+        <div class="status-item">
+            <div class="status-label">⬢ Data Sources</div>
+            <div class="status-value">5 Satellite Systems</div>
+        </div>
+        <div class="status-item">
+            <div class="status-label">⬢ Analysis Period</div>
+            <div class="status-value">2015-2025</div>
+        </div>
+        <div class="status-item">
+            <div class="status-label">⬢ System Status</div>
+            <div class="status-value">🟢 OPERATIONAL</div>
+        </div>
     </div>
 
     <div class="controls">
-        <button class="btn" onclick="window.location.reload()">🔄 Refresh</button>
-        <button class="btn" onclick="downloadSVG()">💾 Download SVG</button>
+        <button class="btn" onclick="window.location.reload()">⟳ Refresh</button>
+        <button class="btn" onclick="downloadSVG()">⬇ Download SVG</button>
     </div>
 
     <div id="mermaid-container">
@@ -340,22 +646,22 @@ graph TD
     </div>
 
     <div class="legend">
-        <h3>📊 Legend</h3>
+        <h3>⬢ SYSTEM LEGEND ⬢</h3>
         <div class="legend-item">
-            <div class="legend-color" style="background: #e1f5fe; border-color: #01579b;"></div>
-            <span class="legend-text"><strong>Data Sources</strong> - Raw input datasets</span>
+            <div class="legend-color" style="background: rgba(0, 255, 255, 0.2); border-color: #00ffff; box-shadow: 0 0 10px #00ffff;"></div>
+            <span class="legend-text"><strong>◈ DATA SOURCES</strong> - Satellite & Remote Sensing Inputs</span>
         </div>
         <div class="legend-item">
-            <div class="legend-color" style="background: #fff3e0; border-color: #e65100;"></div>
-            <span class="legend-text"><strong>Processes</strong> - Analysis & processing steps</span>
+            <div class="legend-color" style="background: rgba(255, 136, 0, 0.2); border-color: #ff8800; box-shadow: 0 0 10px #ff8800;"></div>
+            <span class="legend-text"><strong>◈ PROCESSING</strong> - Analysis & Computation Modules</span>
         </div>
         <div class="legend-item">
-            <div class="legend-color" style="background: #e8f5e9; border-color: #1b5e20;"></div>
-            <span class="legend-text"><strong>Outputs</strong> - Generated results & maps</span>
+            <div class="legend-color" style="background: rgba(0, 255, 136, 0.2); border-color: #00ff88; box-shadow: 0 0 10px #00ff88;"></div>
+            <span class="legend-text"><strong>◈ OUTPUTS</strong> - Generated Maps & Results</span>
         </div>
         <div class="legend-item">
-            <div class="legend-color" style="background: #fff9c4; border-color: #fbc02d;"></div>
-            <span class="legend-text"><strong>Decision Points</strong> - Quality checks & iterations</span>
+            <div class="legend-color" style="background: rgba(255, 255, 0, 0.2); border-color: #ffff00; box-shadow: 0 0 10px #ffff00;"></div>
+            <span class="legend-text"><strong>◈ DECISION NODES</strong> - Quality Control Checkpoints</span>
         </div>
     </div>
 
