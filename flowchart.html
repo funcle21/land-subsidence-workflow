@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Land Subsidence Research Workflow</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#e1f5fe',
+                primaryTextColor: '#01579b',
+                primaryBorderColor: '#01579b',
+                lineColor: '#455a64',
+                secondaryColor: '#fff3e0',
+                tertiaryColor: '#e8f5e9',
+                fontSize: '14px',
+                fontFamily: 'Inter, sans-serif'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis',
+                padding: 20,
+                nodeSpacing: 80,
+                rankSpacing: 100
+            }
+        });
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 20px;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            background: #f8f9fa;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        #mermaid-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            position: relative;
+            min-height: 600px;
+            animation: scaleIn 0.8s ease-out;
+        }
+
+        #diagram-wrapper {
+            width: 100%;
+            height: auto;
+            min-height: 600px;
+            overflow: auto;
+            padding: 40px;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 100%;
+        }
+
+        .legend {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeIn 1s ease-in;
+        }
+
+        .legend h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 12px;
+        }
+
+        .legend-color {
+            width: 40px;
+            height: 25px;
+            border-radius: 5px;
+            border: 2px solid #333;
+        }
+
+        .legend-text {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .zoom-indicator {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { 
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from { 
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Mermaid styling overrides */
+        .mermaid svg {
+            font-family: 'Inter', sans-serif !important;
+        }
+
+        .mermaid .node rect,
+        .mermaid .node circle,
+        .mermaid .node polygon {
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            .controls {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌍 Land Subsidence Research Workflow</h1>
+        <p>Integrated Framework for Risk Assessment & Vulnerability Analysis</p>
+    </div>
+
+    <div class="controls">
+        <button class="btn" onclick="window.location.reload()">🔄 Refresh</button>
+        <button class="btn" onclick="downloadSVG()">💾 Download SVG</button>
+    </div>
+
+    <div id="mermaid-container">
+        <div id="diagram-wrapper">
+            <div class="mermaid">
+graph TD
+    %% --- PHASE 1: Data Acquisition & Pre-processing ---
+    subgraph "PHASE 1: DATA ACQUISITION & PRE-PROCESSING"
+        StyleP1[/"Raw Data Inputs"/]
+        
+        %% Branch 1: Radar Data for Subsidence
+        subgraph "Target Variable Generation (Subsidence)"
+            D1[("Sentinel-1 SLC (C-Band Radar)")]
+            P1["InSAR Time-Series Processing (SBAS/PS) <br> [Software: SNAP / GMTSAR]"]
+            O1[/"OUTPUT: InSAR-derived Land Subsidence Rate Map (2015-2025)"/]
+            D1 --> P1 --> O1
+        end
+
+        %% Branch 2: Influencing Factors
+        subgraph "Conditioning Factors Generation (Independent Variables)"
+            D2[("ALOS PALSAR (12.5m DEM)")] --> P2a["Hydro-geomorphological Analysis <br> [Software: SAGA GIS]"]
+            P2a --> O2a[/"OUTPUT: Morphometric Factors <br>(Slope, TWI, Convergence Index, Ruggedness, etc.)"/]
+
+            D3[("Sentinel-2 / Landsat 8")] --> P2b["Image Classification & Indexing <br> [Software: ArcGIS/QGIS]"]
+            P2b --> O2b[/"OUTPUT: LULC Map, Vegetation Indices (NDVI)"/]
+
+            D4[("CHIRPS/GPM (Rainfall Data)")] --> P2c["Spatio-temporal Aggregation <br> [Software: GEE]"]
+            P2c --> O2c[/"OUTPUT: Rainfall Intensity Maps"/]
+
+            D5[("Census Data / OSM Roads")] --> P2d["Spatial Analysis / Density Kernel <br> [Software: ArcGIS/QGIS]"]
+            P2d --> O2d[/"OUTPUT: Socio-economic Data <br>(Pop Density, Distance to Roads)"/]
+        end
+    end
+
+    %% --- PHASE 2: Achieving Objective 1 ---
+    subgraph "PHASE 2: OBJECTIVE 1 - EVALUATE CONDITIONING FACTORS"
+        INT1["Data Integration: Extract Multi-values to Sample Points"]
+        O1 --> INT1
+        O2a --> INT1
+        O2b --> INT1
+        O2c --> INT1
+        O2d --> INT1
+
+        STAT1["Statistical Analysis <br> [Software: SPSS / R Studio]"]
+        INT1 --> STAT1
+        
+        VIF{"Multicollinearity Check <br>(VIF > 5?)"}
+        STAT1 --> VIF
+        VIF -- Yes --> DROP["Remove Redundant Factor"]
+        DROP --> STAT1
+        
+        VIF -- No --> RANK["Factor Importance Ranking <br> (Correlation / Information Gain Ratio)"]
+        RANK --> FINAL_FACTORS[/"OUTPUT: Selected Optimised Conditioning Factors"/]
+    end
+
+    %% --- PHASE 3: Achieving Objective 2 ---
+    subgraph "PHASE 3: OBJECTIVE 2 - ANFIS-GWO MODELLING"
+        SPLIT["Data Partitioning <br> (70% Training / 30% Testing)"]
+        FINAL_FACTORS --> SPLIT
+        O1 --> SPLIT
+
+        ANFIS_SETUP["Initialize ANFIS Network Structure <br> [Software: MATLAB]"]
+        SPLIT --> ANFIS_SETUP
+
+        GWO["Run Grey Wolf Optimiser (GWO) <br> to minimize RMSE"]
+        ANFIS_SETUP <--> GWO
+
+        VALIDATE["Model Validation using Test Data <br> (Calculate AUC, Kappa, Sensitivity)"]
+        GWO --> VALIDATE
+
+        MAP_SUS["Apply Optimised Model to Study Area"]
+        VALIDATE --> MAP_SUS
+        MAP_SUS --> SUS_MAP[/"OUTPUT: Land Subsidence Inundation Susceptibility Map"/]
+    end
+
+    %% --- PHASE 4: Achieving Objective 3 & Final Risk ---
+    subgraph "PHASE 4: OBJECTIVE 3 - VULNERABILITY & RISK ASSESSMENT"
+        DEF_DMU["Define Spatial Decision Making Units (DMUs) <br> (e.g., 1km Grid Cells)"]
+        SUS_MAP --> DEF_DMU
+        O2d --> DEF_DMU
+        O2b --> DEF_DMU
+
+        DEA_RUN["Data Envelopment Analysis (DEA) <br> Inputs: Exposure/Susceptibility <br> Outputs: Potential Loss <br> [Software: DEAP / R]"]
+        DEF_DMU --> DEA_RUN
+
+        VULN_MAP[/"OUTPUT: Socio-economic Vulnerability Map (Inverted Efficiency Scores)"/]
+        DEA_RUN --> VULN_MAP
+
+        RISK_CALC["Final Risk Calculation <br> Risk = Susceptibility × Vulnerability <br> [Software: ArcGIS Pro/QGIS]"]
+        SUS_MAP --> RISK_CALC
+        VULN_MAP --> RISK_CALC
+    end
+
+    %% --- Final Output ---
+    FINAL_RISK[/"FINAL OUTPUT: Integrated Land Subsidence Risk Map"/]
+    RISK_CALC --> FINAL_RISK
+
+    %% Styling
+    classDef data fill:#e1f5fe,stroke:#01579b,stroke-width:2px,rx:5,ry:5;
+    classDef process fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef output fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,rx:5,ry:5;
+    classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,shape:diamond;
+
+    class D1,D2,D3,D4,D5,StyleP1 data;
+    class P1,P2a,P2b,P2c,P2d,INT1,STAT1,DROP,RANK,SPLIT,ANFIS_SETUP,GWO,VALIDATE,MAP_SUS,DEF_DMU,DEA_RUN,RISK_CALC process;
+    class O1,O2a,O2b,O2c,O2d,FINAL_FACTORS,SUS_MAP,VULN_MAP,FINAL_RISK output;
+    class VIF decision;
+            </div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <h3>📊 Legend</h3>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #e1f5fe; border-color: #01579b;"></div>
+            <span class="legend-text"><strong>Data Sources</strong> - Raw input datasets</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #fff3e0; border-color: #e65100;"></div>
+            <span class="legend-text"><strong>Processes</strong> - Analysis & processing steps</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #e8f5e9; border-color: #1b5e20;"></div>
+            <span class="legend-text"><strong>Outputs</strong> - Generated results & maps</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #fff9c4; border-color: #fbc02d;"></div>
+            <span class="legend-text"><strong>Decision Points</strong> - Quality checks & iterations</span>
+        </div>
+    </div>
+
+    <script>
+        function downloadSVG() {
+            const svg = document.querySelector('.mermaid svg');
+            if (svg) {
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                const svgUrl = URL.createObjectURL(svgBlob);
+                const downloadLink = document.createElement('a');
+                downloadLink.href = svgUrl;
+                downloadLink.download = 'land_subsidence_workflow.svg';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                URL.revokeObjectURL(svgUrl);
+            }
+        }
+    </script>
+</body>
+</html>
